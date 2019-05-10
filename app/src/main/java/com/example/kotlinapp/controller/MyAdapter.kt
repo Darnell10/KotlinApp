@@ -7,14 +7,13 @@ import com.example.kotlinapp.R
 import com.example.kotlinapp.model.CryptoCurrencies
 
 
-//Pass the ArrayList and a list, and add a variable to hold your data
-
+//Define an array of colors
 private val colors: Array<String> = arrayOf(
     "#7E57C2", "#42A5F5", "#26C6DA", "#66BB6A", "#FFEE58", "#FF7043"
     , "#EC407A", "#d32f2f"
 )
 
-
+//Pass the ArrayList and a list, and add a variable to hold your data
 class MyAdapter(private val cryptoList: ArrayList<CryptoCurrencies>, private val listener: Listener) :
 
 // Extend Recycler.View
@@ -31,13 +30,14 @@ class MyAdapter(private val cryptoList: ArrayList<CryptoCurrencies>, private val
         return MyHolder(view)
     }
 
-
+    //Bind the ViewHolder
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-
+        //Pass the position where each item should be displayed
         holder.onBind(cryptoList[position], listener, colors, position)
 
     }
 
+    //Check how many items you have to display
     override fun getItemCount(): Int = cryptoList.count()
 
 }

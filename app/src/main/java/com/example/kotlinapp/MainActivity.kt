@@ -33,29 +33,33 @@ class MainActivity : AppCompatActivity(), MyAdapter.Listener {
 
     }
 
-    // Initialise the RecyclerView
+    /**Initialise the RecyclerView*/
 
     private fun initRecyclerView() {
-        // Use a layout manager to position your items to look a standard ListView
+        //Use a layout manager to position your items to look a standard ListView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         cryptocurrency_list.layoutManager = layoutManager
 
     }
 
     /**Implement loadData*/
-
     private fun loadData() {
 
-        /**Define retrofit request*/
+        /** Define the Retrofit request*/
         val requestInterface = Retrofit.Builder()
-            //Set the API’s base URL//
+                //Set the API’s base URL
             .baseUrl(BASE_URL)
+                //Specify the converter factory to use for serialization and deserialization
             .addConverterFactory(GsonConverterFactory.create())
+                //Add a call adapter factory to support RxJava return types
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            //Build the Retrofit instance
             .build().create(ApiInterface::class.java)
-        myCompositeDisposable?.add(
-            requestInterface.getData()
+        //Add all RxJava disposables to a CompositeDisposable
+        myCompositeDisposable?.add(requestInterface.getData()
+            //Send the Observable’s notifications to the main UI thread
                 .observeOn(AndroidSchedulers.mainThread())
+            //Subscribe to the Observer away from the main UI thread
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse)
         )
@@ -67,17 +71,18 @@ class MainActivity : AppCompatActivity(), MyAdapter.Listener {
 
         myCryptoList = ArrayList(cryptoList)
         myAdapter = MyAdapter(myCryptoList!!, this)
-
+        //Set the adapter
         cryptocurrency_list.adapter = myAdapter
     }
 
     override fun onItemClick(cryptoCurrencies: CryptoCurrencies) {
+        //If the user clicks on an item, then display a Toast
         Toast.makeText(this, "You Clicked : ${cryptoCurrencies.currency}", Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
+        //Clear all your disposables
         myCompositeDisposable?.clear()
     }
 }
